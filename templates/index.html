@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Médica</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block title %}Citas Programadas{% endblock %}
+    
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Citas Programadas</h1>
+        
+        <div class="mb-3">
+            <a href="{{ url_for('agendar') }}" class="btn btn-primary">Agendar Nueva Cita</a>
+        </div>
+
+        <a href="{{ url_for('eliminar_canceladas') }}" class="btn btn-danger mb-3" onclick="return confirm('¿Estás seguro de que deseas eliminar todas las citas canceladas?');">Eliminar Citas Canceladas</a>
+
+        <form method="GET" class="mb-4">
+            <div class="form-group">
+                <label for="status">Filtrar por Estado:</label>
+                <select name="status" id="status" class="form-control" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    {% for estado in estados %}
+                        <option value="{{ estado }}" {% if estado == filtro_actual %}selected{% endif %}>{{ estado }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Paciente</th>
+                    <th>Médico</th>
+                    <th>Fecha</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                    <tr>
+                        <td>{{ cita.id_cita }}</td>
+                        <td>{{ cita.paciente }}</td>
+                        <td>{{ cita.medico }}</td>
+                        <td>{{ cita.fecha_cita }}</td>
+                        <td>{{ cita.motivo }}</td>
+                        <td>{{ cita.estado }}</td>
+                        <td>
+                            <a href="{{ url_for('editar', id_cita=cita.id_cita) }}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{{ url_for('eliminar', id_cita=cita.id_cita) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta cita?');">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
